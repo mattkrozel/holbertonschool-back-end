@@ -2,26 +2,28 @@
 '''
 returns to do list info for specific employee
 '''
-from requests import get
+import json
+import requests
 from sys import argv
 
 if __name__ == '__main__':
-    user_id = argv[1]
-    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
-    response = get(url)
-    name = response.json().get('name')
-
-    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(user_id)
-    response = get(url)
-    tasks = response.json()
-    done = 0
-    done_tasks = []
-    for task in tasks:
-        if task.get('completed'):
-            done_tasks.append(task)
-            done += 1
+    numdone, numtasks = 0, 0
+    userId = argv[1]
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(userId)
+    user_response = requests.get(url)
+    url = 'https://jsonplaceholder.typicode.com/todos/?userId={}'\
+        .format(userId)
+    todo_response = requests.get(url)
+    userInfo = json.loads(user_response.text)
+    todoInfo = json.loads(todo_response.text)
+    employeeName = userInfo['name']
+    for task in todoInfo:
+        numtasks += 1
+        if task['completed']:
+            numdone += 1
 
     print('Employee {} is done with tasks({}/{}):'
-          .format(name, done, len(tasks)))
-    for task in done_tasks:
-        print('\t {}'.format(task.get('title')))
+          .format(employeeName, numdone, numtasks))
+    for task in todoInfo:
+        if task['completed']:
+            print('\t {}'.format(task['title']))
