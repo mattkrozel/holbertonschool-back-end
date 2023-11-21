@@ -15,7 +15,7 @@ def tasks_finished(id):
     url = 'https://jsonplaceholder.typicode.com/users/{}'.format(id)
     user_response = requests.get(url)
     json_response = user_response.json()
-    employee = json_response.get('name')
+    employee = json_response('name')
     url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(id)
     todos = requests.get(url)
     json_todos = todos.json()
@@ -33,8 +33,3 @@ def tasks_finished(id):
 
 if __name__ == '__main__':
     tasks_finished(sys.argv[1])
-
-
-
-
-
