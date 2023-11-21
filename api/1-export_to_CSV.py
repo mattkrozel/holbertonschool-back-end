@@ -2,34 +2,37 @@
 '''
 returns to do list info for specific employee
 '''
-import csv
-import json
+
 import requests
-from sys import argv
+import sys
+
+def tasks_finished(id):
+    '''
+    displays employee finished todo
+    '''
+
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(id)
+    user_response = requests.get(url)
+    json_response = user_response.json()
+    employee = json_response.get('name')
+    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(id)
+    todos = requests.get(url)
+    json_todos = todos.json()
+    num_tasks = len(json_todos)
+    finished_task = 0
+    task_list = ''
+    for task in json_todos:
+        if task.get('completed') is True:
+            finished_task += 1
+            task_list += '\t ' + task.get('title') + '\n'
+
+    print('Employee {} is done with tasks({}/{}):'.format(
+        employee, finished_task, num_tasks))
+    print(task_list[:-1])
 
 if __name__ == '__main__':
-    numdone, numtasks = 0, 0
-    user_id = argv[1]
-    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
-    user_response = requests.get(url)
-    url = 'https://jsonplaceholder.typicode.com/todos/?userId={}'\
-        .format(user_id)
-    todo_response = requests.get(url)
-    userInfo = json.loads(user_response.text)
-    todoInfo = json.loads(todo_response.text)
-    tasks = []
-    usersname = userInfo['username']
-    for task in todoInfo:
-        task_dict = {}
-        task_dict['USER_ID'] = user_id
-        task_dict['USERNAME'] = usersname
-        task_dict['TASK_COMPLETED_STATUS'] = task['completed']
-        task_dict['TASK_TITLE'] = task['title']
-        tasks.append(task_dict)
+    tasks_finished(sys.argv[1])
 
-    names = ["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"]
-    with open('./{}.csv'.format(user_id), 'w', encoding='UTF8',
-              newline='') as f:
-        writer = csv.Dictwriter(f, names=names,
-                                quoting=csv.QUOTE_ALL, quotechar='"')
-        writer.writerows(tasks)
+
+
+
