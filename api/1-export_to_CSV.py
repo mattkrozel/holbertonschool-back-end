@@ -3,33 +3,24 @@
 returns to do list info for specific employee
 '''
 
-import requests
-import sys
+from requests import get
+from sys import argv
 
 
-def tasks_finished(id):
+if __name__ == '__main__':
     '''
     displays employee finished todo
     '''
 
-    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(id)
-    user_response = requests.get(url)
-    json_response = user_response.json()
-    employee = json_response('name')
-    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(id)
-    todos = requests.get(url)
-    json_todos = todos.json()
-    num_tasks = len(json_todos)
-    finished_task = 0
-    task_list = ''
-    fileName = '{}.csv'.format(id)
-    with open(fileName, 'a') as fd:
-        for todo in json_todos:
-            finished = todo.get('completed')
-            title = todo.get('title')
-            csv = '\'{}\',\'{}\',\'{}\',\'{}\'\n'.format(
-                id, employee, finished, title)
-            fd.write(csv)
+    userId = argv[1]
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(userId)
+    user_response = get(url)
+    user = user_response.json().get('username')
 
-if __name__ == '__main__':
-    tasks_finished(sys.argv[1])
+    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(userId)
+    todos = get(url)
+    json_todos = todos.json()
+    with open('{}.csv'.format(userId), 'w') as file:
+        for task in json_todos:
+            file.write('"{}","{}","{}","{}"\n'.format(userId, user, task.get('completed'),
+                                                      task.get('title')))
