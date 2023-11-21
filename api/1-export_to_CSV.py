@@ -22,5 +22,6 @@ if __name__ == '__main__':
     json_todos = todos.json()
     with open('{}.csv'.format(userId), 'w') as file:
         for task in json_todos:
-            file.write('"{}","{}","{}","{}"\n'.format(userId, user, task.get('completed'),
+            file.write('"{}","{}","{}","{}"\n'.format(userId, user,
+                                                      task.get('completed'),
                                                       task.get('title')))
