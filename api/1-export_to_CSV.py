@@ -6,6 +6,7 @@ returns to do list info for specific employee
 import requests
 import sys
 
+
 def tasks_finished(id):
     '''
     displays employee finished todo
@@ -21,17 +22,18 @@ def tasks_finished(id):
     num_tasks = len(json_todos)
     finished_task = 0
     task_list = ''
-    for task in json_todos:
-        if task.get('completed') is True:
-            finished_task += 1
-            task_list += '\t ' + task.get('title') + '\n'
-
-    print('Employee {} is done with tasks({}/{}):'.format(
-        employee, finished_task, num_tasks))
-    print(task_list[:-1])
+    fileName = '{}.csv'.format(id)
+    with open(fileName, 'a') as fd:
+        for todo in json_todos:
+            finished = todo.get('completed')
+            title = todo.get('title')
+            csv = '\'{}\',\'{}\',\'{}\',\'{}\'\n'.format(
+                id, employee, finished, title)
+            fd.write(csv)
 
 if __name__ == '__main__':
     tasks_finished(sys.argv[1])
+
 
 
 
