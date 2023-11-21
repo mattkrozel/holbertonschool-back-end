@@ -13,20 +13,19 @@ if __name__ == '__main__':
     displays employee finished todo
     '''
 
-    userId = argv[1]
-    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(userId)
+    user_id = argv[1]
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
     user_response = get(url)
     user = user_response.json().get('username')
 
-    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(userId)
+    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(user_id)
     todos = get(url)
     json_todos = todos.json()
-    dictionary = {userId: []}
+    dictionary = {user_id: []}
     for task in json_todos:
-        dictionary[userId].append(
+        dictionary[user_id].append(
             {'task': task.get('title'),
              'completed': task.get('completed'),
-             'username': user}
-        )
-    with open('{}.json'.format(userId), 'w') as file:
+             'username': user})
+    with open('{}.json'.format(user_id), 'w') as file:
         dump(dictionary, file)
