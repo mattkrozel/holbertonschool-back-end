@@ -26,7 +26,7 @@ if __name__ == '__main__':
         reply = get(url)
         jobs = reply.json()
         dictionary[userId] = []
-        for task in tasks:
+        for task in jobs:
             dictionary[userId].append({
                 'task': task.get('title'),
                 'completed': task.get('completed'),
